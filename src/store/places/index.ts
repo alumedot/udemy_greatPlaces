@@ -1,3 +1,4 @@
+import * as FileSystem from 'expo-file-system';
 import * as T from './types';
 import Place from '../../models/place';
 
@@ -8,7 +9,11 @@ export enum ActionTypesPlaces {
 //   - - - reducer - - -   //
 
 export type TPlacesState = {
-  places: Array<{ id: string, title: string}>;
+  places: Array<{
+    id: string,
+    title: string,
+    imageUri: string
+  }>;
 };
 
 const initialState: TPlacesState = {
@@ -18,7 +23,7 @@ const initialState: TPlacesState = {
 export default (state: TPlacesState = initialState, action: Actions) => {
   switch (action.type) {
     case ActionTypesPlaces.AddPlace:
-      const newPlace = new Place(new Date().toString(), action.title);
+      const newPlace = new Place(new Date().toString(), action.title, action.image);
       return {
         places: [...state.places, newPlace],
       };
@@ -30,11 +35,27 @@ export default (state: TPlacesState = initialState, action: Actions) => {
 
 //   - - - action creators - - -   //
 
-export const addPlace = (title: string) => {
-  return {
-    type: ActionTypesPlaces.AddPlace,
-    title,
-  }
+export const addPlace = (title: string, selectedImage: string) => {
+  return async dispatch => {
+    const fileName = selectedImage.split('/').pop();
+    const newPath = FileSystem.documentDirectory + fileName!;
+
+    try {
+      await FileSystem.moveAsync({
+        from: selectedImage,
+        to: newPath,
+      });
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+
+    dispatch({
+      type: ActionTypesPlaces.AddPlace,
+      title,
+      image: newPath,
+    });
+  };
 }
 
 //   - - -  - -  - - -   //
