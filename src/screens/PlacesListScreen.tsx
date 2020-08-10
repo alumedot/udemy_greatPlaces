@@ -1,7 +1,8 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { StyleSheet, Platform, FlatList } from 'react-native';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Platform, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import * as placesActions from '../store/places';
 import { IRooReduxState } from '../store/types';
 import PlaceItem from '../components/PlaceItem';
 
@@ -9,6 +10,11 @@ import HeaderButton from '../components/HeaderButton';
 
 const PlacesListScreen = props => {
   const places = useSelector((state: IRooReduxState) => state.places.places);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(placesActions.loadPlaces());
+  }, [dispatch]);
 
   return (
     <FlatList
@@ -46,7 +52,5 @@ PlacesListScreen.navigationOptions = navData => {
       ),
     };
 };
-
-const styles = StyleSheet.create({});
 
 export default PlacesListScreen;

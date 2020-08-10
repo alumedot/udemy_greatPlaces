@@ -21,3 +21,48 @@ export const init = () => {
     })
   });
 };
+
+export const insertPlace = (title: string, imageUri: string, address: string, lat: number, lng: number) => {
+  return new Promise<{ insertId: number }>((resolve, reject) => {
+    // @ts-ignore
+    // https://github.com/expo/expo/issues/5264
+    // bug report with the unknown `transaction` type
+    db.transaction((tx) => {
+      tx.executeSql(
+        'INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?);',
+        [title, imageUri, address, lat, lng],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, err) => {
+          reject(err);
+        },
+      )
+    })
+  });
+};
+
+export const fetchPlaces = () => {
+  return new Promise<{
+    insertId: number,
+    rows: {
+      _array: [],
+    }
+  }>((resolve, reject) => {
+    // @ts-ignore
+    // https://github.com/expo/expo/issues/5264
+    // bug report with the unknown `transaction` type
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM places',
+        [],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, err) => {
+          reject(err);
+        },
+      )
+    })
+  });
+};

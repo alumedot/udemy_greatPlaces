@@ -4,10 +4,11 @@ import { ScrollView, View, Text, Button, TextInput, StyleSheet } from 'react-nat
 import { Colors } from '../constants';
 import { addPlace } from '../store/places';
 import ImagePicker from '../components/ImagePicker';
+import LocationPicker from '../components/LocationPicker';
 
 const NewPlaceScreen = props => {
   const [ titleValue, setTitleValue ] = useState('');
-  const [selectedImage, setSelectedImage] = useState('');
+  const [ selectedImage, setSelectedImage ] = useState('');
 
   const dispatch = useDispatch();
 
@@ -34,6 +35,7 @@ const NewPlaceScreen = props => {
           value={titleValue}
         />
         <ImagePicker onImageTaken={onImageTaken} />
+        <LocationPicker navigation={props.navigation} />
         <Button
           title="Save Place"
           color={Colors.Primary}
