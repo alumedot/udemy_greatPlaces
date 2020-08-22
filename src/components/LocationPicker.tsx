@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Button, Text, ActivityIndicator, Alert, StyleSheet } from 'react-native';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
@@ -8,6 +8,16 @@ import { Colors } from '../constants';
 const LocationPicker = (props) => {
   const [ pickedLocation, setPickerLocation ] = useState<{ lat: number, lng: number } | null>(null);
   const [ isFetching, setIsFetching ] = useState(false);
+
+  const mapPickedLocation = props.navigation.getParam('pickedLocation');
+
+  useEffect(() => {
+    if (mapPickedLocation) {
+      setPickerLocation(mapPickedLocation);
+    }
+    props.onLocationPicked(mapPickedLocation);
+  }, [mapPickedLocation, props.onLocationPicked]);
+
   const verifyPermissions = async () => {
     const result = await Permissions.askAsync(Permissions.LOCATION);
     if (result.status !== 'granted') {
@@ -30,10 +40,12 @@ const LocationPicker = (props) => {
     try {
       setIsFetching(true);
       const location = await Location.getCurrentPositionAsync({ timeout: 5000, });
-      setPickerLocation({
+      const _location = {
         lat: location.coords.latitude,
         lng: location.coords.longitude,
-      });
+      };
+      setPickerLocation(_location);
+      props.onLocationPicked(_location);
     } catch (e) {
       Alert.alert(
         'Could not fetch location!',

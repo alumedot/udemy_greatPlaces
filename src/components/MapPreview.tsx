@@ -3,12 +3,12 @@ import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 import ENV from '../../env';
 
 type Props = {
-  styles: {};
   onPress: () => void;
   location: {
     lat: number,
     lng: number,
   } | null;
+  styles?: {};
 }
 
 const MapPreview: FC<Props> = (props) => {
