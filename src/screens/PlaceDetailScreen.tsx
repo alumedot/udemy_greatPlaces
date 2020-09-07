@@ -9,6 +9,16 @@ const PlaceDetailScreen = props => {
   const {} = props;
   const placeId = props.navigation.getParam('placeId');
   const selectedPlace = useSelector(({ places }: IRooReduxState) => places.places.find(place => place.id === placeId));
+  const selectedLocation = { lat: selectedPlace!.lat, lng: selectedPlace!.lng };
+  const showMapHandler = () => {
+    props.navigation.navigate(
+      'Map',
+      {
+        readonly: true,
+        initialLocation: selectedLocation,
+      },
+    );
+  };
 
   return (
     <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
@@ -17,7 +27,11 @@ const PlaceDetailScreen = props => {
         <View style={styles.addressContainer}>
           <Text style={styles.address}>{selectedPlace!.address}</Text>
         </View>
-        <MapPreview styles={styles.mapPreview} onPress={() => {}} location={{ lat: selectedPlace!.lat, lng: selectedPlace!.lng }} />
+        <MapPreview
+          styles={styles.mapPreview}
+          onPress={showMapHandler}
+          location={selectedLocation}
+        />
       </View>
     </ScrollView>
   );

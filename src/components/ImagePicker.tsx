@@ -34,7 +34,6 @@ const ImgPicker = (props: Props) => {
       quality: 0.5,
     });
 
-    console.log('image', image);
     if (!image.cancelled) {
       setPickedImage(image.uri);
       props.onImageTaken(image.uri);
